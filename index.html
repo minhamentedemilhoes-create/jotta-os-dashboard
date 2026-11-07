@@ -15,6 +15,7 @@
             --accent: #00ffcc; 
             --accent-hover: #00b38f; 
             --danger: #ff3366; 
+            --gold: #ffd700;
             --muted: #888888;
             --border: #333333;
         }
@@ -26,7 +27,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 80vh;
+            min-height: 85vh;
         }
         .auth-card {
             background: var(--panel);
@@ -34,7 +35,7 @@
             border-radius: 8px;
             padding: 35px;
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
         .auth-card h1 {
@@ -42,17 +43,28 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .auth-card h1 span { color: var(--accent); }
         .auth-subtitle {
             text-align: center;
             font-size: 0.85rem;
             color: var(--muted);
-            margin-bottom: 25px;
+            margin-bottom: 22px;
+        }
+        .admin-badge-init {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 600;
         }
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         .form-group label {
             display: block;
@@ -80,7 +92,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 22px;
+            margin-top: 18px;
         }
         .auth-msg {
             margin-top: 15px;
@@ -101,6 +113,28 @@
             border: 1px solid var(--accent);
             color: var(--accent);
             display: block;
+        }
+        .tab-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--accent);
+            background: rgba(0, 255, 204, 0.1);
+            font-weight: 600;
         }
 
         /* Dashboard Styles */
@@ -129,9 +163,12 @@
         h1 { font-size: 1.5rem; letter-spacing: 1px; text-transform: uppercase; }
         h1 span { color: var(--accent); }
         .status-badge { background: rgba(0, 255, 204, 0.1); color: var(--accent); padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; border: 1px solid var(--accent); }
+        .admin-badge { background: rgba(255, 215, 0, 0.15); color: var(--gold); border: 1px solid var(--gold); padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
         .timer-display { font-size: 4rem; font-weight: bold; text-align: center; color: var(--accent); font-variant-numeric: tabular-nums; margin: 20px 0; }
         .btn { background: var(--accent); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn:hover { background: var(--accent-hover); }
+        .btn-gold { background: var(--gold); color: #000; font-weight: bold; }
+        .btn-gold:hover { background: #e6c200; }
         .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
         .btn-outline:hover { background: rgba(0, 255, 204, 0.1); }
         .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); margin-top: 10px; }
@@ -145,53 +182,160 @@
         .laws-box strong { color: #fff; display: block; margin-bottom: 5px; }
         .user-pill { font-size: 0.8rem; color: var(--muted); }
         .db-status { font-size: 0.75rem; color: var(--accent); }
+        
+        /* Painel Exclusivo do Admin */
+        #adminSection {
+            background: #141414;
+            border: 1px solid #443e10;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 20px;
+            max-width: 1400px;
+            margin: 0 auto 20px auto;
+            display: none;
+        }
+        #adminSection h3 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .admin-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .admin-controls input {
+            background: #0a0a0a;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE AUTENTICAÇÃO (LOGIN / REGISTRO) -->
+    <!-- TELA DE AUTENTICAÇÃO -->
     <div id="authContainer">
         <div class="auth-card">
             <h1>Jotta <span>Rary</span></h1>
-            <p class="auth-subtitle">OS Operacional • Acesso Restrito</p>
+            <p class="auth-subtitle">OS Operacional • Controle de Acesso</p>
             
-            <form id="authForm" onsubmit="event.preventDefault(); handleLogin();">
-                <div class="form-group">
-                    <label for="authEmail">E-mail Operacional</label>
-                    <input type="email" id="authEmail" class="form-control" placeholder="operador@jottarary.com" required>
+            <!-- ALERTA / FLUXO DE INICIALIZAÇÃO DO PRIMEIRO USUÁRIO (ADMIN) -->
+            <div id="initAdminBox" style="display: none;">
+                <div class="admin-badge-init">
+                    👑 INICIALIZAÇÃO DO SISTEMA<br>
+                    <span style="font-size: 0.75rem; font-weight: normal; color: #ccc;">
+                        A primeira conta criada será o <strong>ÚNICO ADMINISTRADOR</strong> do sistema.
+                    </span>
                 </div>
-                <div class="form-group">
-                    <label for="authPassword">Chave de Segurança (Senha)</label>
-                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
+                <form onsubmit="event.preventDefault(); handleFirstAdminRegister();">
+                    <div class="form-group">
+                        <label>Identificador Admin</label>
+                        <input type="text" id="initUsername" class="form-control" placeholder="ex: jottarary" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha Mestra do Admin</label>
+                        <input type="password" id="initPassword" class="form-control" placeholder="Senha do Admin" required>
+                    </div>
+                    <button type="submit" class="btn btn-gold" id="btnInitAdmin">CRIAR ÚNICO ADMIN</button>
+                </form>
+            </div>
+
+            <!-- FLUXO REGULAR COM ADMIN JÁ CRIADO -->
+            <div id="regularAuthBox" style="display: none;">
+                <div class="tab-switcher">
+                    <button class="tab-btn active" id="tabAdmin" onclick="switchTab('admin')">👑 Admin (Só Senha)</button>
+                    <button class="tab-btn" id="tabUser" onclick="switchTab('user')">👤 Operador</button>
+                    <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">➕ Criar Conta</button>
                 </div>
-                
-                <div class="auth-buttons">
-                    <button type="submit" class="btn" id="btnLogin">ACESSAR SISTEMA</button>
-                    <button type="button" class="btn btn-outline" id="btnRegister" onclick="handleRegister()">CRIAR CONTA</button>
-                </div>
-            </form>
+
+                <!-- MODO 1: ADMIN SOMENTE COM SENHA -->
+                <form id="formAdminOnly" onsubmit="event.preventDefault(); handleAdminPasswordLogin();">
+                    <div class="form-group">
+                        <label>Chave de Acesso Admin (Somente Senha)</label>
+                        <input type="password" id="adminPasswordInput" class="form-control" placeholder="Digite a senha do admin..." required autofocus>
+                    </div>
+                    <div class="auth-buttons">
+                        <button type="submit" class="btn btn-gold" id="btnAdminLogin">ENTRAR COMO ADMIN</button>
+                    </div>
+                </form>
+
+                <!-- MODO 2: OPERADOR (USUÁRIO + SENHA) -->
+                <form id="formUserLogin" style="display: none;" onsubmit="event.preventDefault(); handleUserLogin();">
+                    <div class="form-group">
+                        <label>Usuário Operador</label>
+                        <input type="text" id="userLoginName" class="form-control" placeholder="Seu usuário..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" id="userLoginPassword" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div class="auth-buttons">
+                        <button type="submit" class="btn" id="btnUserLogin">ACESSAR COMO OPERADOR</button>
+                    </div>
+                </form>
+
+                <!-- MODO 3: CRIAR NOVA CONTA (OPERADOR COMUM) -->
+                <form id="formNewAccount" style="display: none;" onsubmit="event.preventDefault(); handleMemberRegister();">
+                    <div class="form-group">
+                        <label>Nome do Novo Operador</label>
+                        <input type="text" id="regUsername" class="form-control" placeholder="Nome de usuário..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" id="regPassword" class="form-control" placeholder="Mínimo 4 caracteres" required>
+                    </div>
+                    <div class="auth-buttons">
+                        <button type="submit" class="btn btn-outline" id="btnCreateAccount">CRIAR CONTA OPERADOR</button>
+                    </div>
+                </form>
+            </div>
             
             <div id="authMsg" class="auth-msg"></div>
-            <div style="margin-top: 15px; text-align: center; font-size: 0.75rem; color: #555;">
-                ⚡ Banco de Dados Supabase Conectado
+            <div style="margin-top: 18px; text-align: center; font-size: 0.75rem; color: #555;">
+                ⚡ Supabase Database • Autenticação Nativa
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD PRINCIPAL (OS OPERACIONAL) -->
+    <!-- PAINEL PRINCIPAL (OS OPERACIONAL) -->
     <div id="dashboardContainer">
+        <!-- CABEÇALHO DO OS -->
         <div class="header">
             <div class="header-left">
                 <h1>Jotta <span>Rary</span></h1>
-                <span class="db-status">🟢 Cloud DB Online</span>
+                <span class="db-status">🟢 Supabase DB Conectado</span>
             </div>
             <div class="header-right">
                 <span id="clock" style="font-weight: bold;">00:00:00</span>
                 <span class="status-badge">Meta: Balneário Camboriú</span>
-                <span class="user-pill" id="userEmailDisplay"></span>
-                <button class="btn-logout" onclick="handleLogout()">Sair</button>
+                <span id="userRoleBadge"></span>
+                <span class="user-pill" id="userNameDisplay"></span>
+                <button class="btn-logout" onclick="handleLogout()">Encerrar Sessão</button>
             </div>
         </div>
+
+        <!-- PAINEL DE CONTROLE EXCLUSIVO DO ADMIN -->
+        <div id="adminSection">
+            <h3>👑 Painel de Gerenciamento do Administrador</h3>
+            <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px;">
+                Você é o <strong>único administrador</strong>. Como admin, você pode criar novas contas de operadores diretamente:
+            </p>
+            <div class="admin-controls">
+                <input type="text" id="adminAddUser" placeholder="Novo Operador">
+                <input type="password" id="adminAddPass" placeholder="Senha">
+                <button class="btn" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="adminCreateUser()">Adicionar Operador</button>
+                <span id="adminAddMsg" style="font-size: 0.85rem; color: var(--accent);"></span>
+            </div>
+        </div>
+
+        <!-- GRID DOS PAINÉIS DO OS -->
         <div class="grid">
             <div class="panel">
                 <h2>Motor de Foco (50/10)</h2>
@@ -226,108 +370,261 @@
     </div>
 
     <script>
-        // Configuração Supabase
+        // Conexão Supabase
         const SUPABASE_URL = "https://llydpmsvosfqdsrkshbi.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxseWRwbXN2b3NmcWRzcmtzaGJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwNjQ3NDksImV4cCI6MjEwOTY0MDc0OX0.muu3wpmYEIhGOUmpHPoFSbBkvVhQuQKGoy_Wb-W3CTE";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentUser = null;
+        let currentAccount = null;
 
-        // Feedback visual de autenticação
         function showAuthMsg(msg, isError = false) {
             const el = document.getElementById('authMsg');
             el.innerText = msg;
             el.className = 'auth-msg ' + (isError ? 'error' : 'success');
         }
 
-        // Login com Supabase Auth
-        async function handleLogin() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value;
-            const btn = document.getElementById('btnLogin');
-            
-            if (!email || !password) {
-                showAuthMsg("Preencha email e senha.", true);
-                return;
-            }
+        // Alternador de Abas de Login
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('formAdminOnly').style.display = 'none';
+            document.getElementById('formUserLogin').style.display = 'none';
+            document.getElementById('formNewAccount').style.display = 'none';
 
-            btn.innerText = "AUTENTICANDO...";
-            btn.disabled = true;
-
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            btn.innerText = "ACESSAR SISTEMA";
-            btn.disabled = false;
-
-            if (error) {
-                showAuthMsg("Falha no acesso: " + (error.message || "Credenciais inválidas"), true);
-            } else {
-                showAuthMsg("Acesso autorizado. Carregando OS...", false);
-                setupDashboard(data.user);
+            if (tab === 'admin') {
+                document.getElementById('tabAdmin').classList.add('active');
+                document.getElementById('formAdminOnly').style.display = 'block';
+                document.getElementById('adminPasswordInput').focus();
+            } else if (tab === 'user') {
+                document.getElementById('tabUser').classList.add('active');
+                document.getElementById('formUserLogin').style.display = 'block';
+                document.getElementById('userLoginName').focus();
+            } else if (tab === 'register') {
+                document.getElementById('tabRegister').classList.add('active');
+                document.getElementById('formNewAccount').style.display = 'block';
+                document.getElementById('regUsername').focus();
             }
         }
 
-        // Registro de novo usuário
-        async function handleRegister() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value;
-            const btn = document.getElementById('btnRegister');
+        // Verificar se já existe Admin no Banco de Dados
+        async function checkSystemSetup() {
+            // Verificar sessão local salva
+            const saved = localStorage.getItem('jotta_os_account');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.id) {
+                        openDashboard(parsed);
+                        return;
+                    }
+                } catch(e) {}
+            }
 
-            if (!email || !password) {
-                showAuthMsg("Informe email e senha para criar conta.", true);
+            try {
+                const { data, error } = await supabase.rpc('get_system_status');
+                if (!error && data) {
+                    if (data.has_admin === false) {
+                        document.getElementById('initAdminBox').style.display = 'block';
+                        document.getElementById('regularAuthBox').style.display = 'none';
+                    } else {
+                        document.getElementById('initAdminBox').style.display = 'none';
+                        document.getElementById('regularAuthBox').style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao verificar status do sistema:", err);
+            }
+        }
+
+        // Cadastro do Primeiro Usuário -> ÚNICO ADMIN
+        async function handleFirstAdminRegister() {
+            const username = document.getElementById('initUsername').value.trim();
+            const password = document.getElementById('initPassword').value;
+            const btn = document.getElementById('btnInitAdmin');
+
+            if (!username || !password) {
+                showAuthMsg("Preencha usuário e senha.", true);
                 return;
             }
 
-            if (password.length < 6) {
-                showAuthMsg("A senha deve possuir no mínimo 6 caracteres.", true);
+            btn.innerText = "REGISTRANDO ADMIN...";
+            btn.disabled = true;
+
+            const { data, error } = await supabase.rpc('register_account', {
+                p_username: username,
+                p_password: password
+            });
+
+            btn.innerText = "CRIAR ÚNICO ADMIN";
+            btn.disabled = false;
+
+            if (error || !data || !data.success) {
+                showAuthMsg(data?.error || error?.message || "Erro ao registrar admin.", true);
+            } else {
+                showAuthMsg("👑 Admin único criado com sucesso! Entrando...", false);
+                openDashboard(data);
+            }
+        }
+
+        // Login do Admin SOMENTE COM SENHA
+        async function handleAdminPasswordLogin() {
+            const password = document.getElementById('adminPasswordInput').value;
+            const btn = document.getElementById('btnAdminLogin');
+
+            if (!password) {
+                showAuthMsg("Digite a senha do admin.", true);
+                return;
+            }
+
+            btn.innerText = "AUTORIZANDO...";
+            btn.disabled = true;
+
+            const { data, error } = await supabase.rpc('login_admin_only_password', {
+                p_password: password
+            });
+
+            btn.innerText = "ENTRAR COMO ADMIN";
+            btn.disabled = false;
+
+            if (error || !data || !data.success) {
+                showAuthMsg(data?.error || error?.message || "Senha incorreta.", true);
+            } else {
+                showAuthMsg("👑 Acesso de Admin autorizado! Carregando OS...", false);
+                openDashboard(data);
+            }
+        }
+
+        // Login de Operador (Nome + Senha)
+        async function handleUserLogin() {
+            const username = document.getElementById('userLoginName').value.trim();
+            const password = document.getElementById('userLoginPassword').value;
+            const btn = document.getElementById('btnUserLogin');
+
+            if (!username || !password) {
+                showAuthMsg("Preencha usuário e senha.", true);
+                return;
+            }
+
+            btn.innerText = "VERIFICANDO...";
+            btn.disabled = true;
+
+            const { data, error } = await supabase.rpc('login_account', {
+                p_username: username,
+                p_password: password
+            });
+
+            btn.innerText = "ACESSAR COMO OPERADOR";
+            btn.disabled = false;
+
+            if (error || !data || !data.success) {
+                showAuthMsg(data?.error || error?.message || "Credenciais inválidas.", true);
+            } else {
+                showAuthMsg("Acesso autorizado. Carregando...", false);
+                openDashboard(data);
+            }
+        }
+
+        // Criar Nova Conta (Operador Comum)
+        async function handleMemberRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const btn = document.getElementById('btnCreateAccount');
+
+            if (!username || !password) {
+                showAuthMsg("Preencha usuário e senha.", true);
                 return;
             }
 
             btn.innerText = "CRIANDO...";
             btn.disabled = true;
 
-            const { data, error } = await supabase.auth.signUp({ email, password });
-            btn.innerText = "CRIAR CONTA";
+            const { data, error } = await supabase.rpc('register_account', {
+                p_username: username,
+                p_password: password
+            });
+
+            btn.innerText = "CRIAR CONTA OPERADOR";
             btn.disabled = false;
 
-            if (error) {
-                showAuthMsg("Erro ao registrar: " + error.message, true);
+            if (error || !data || !data.success) {
+                showAuthMsg(data?.error || error?.message || "Erro ao criar conta.", true);
             } else {
-                if (data.session) {
-                    showAuthMsg("Conta criada com sucesso! Carregando...", false);
-                    setupDashboard(data.user);
-                } else {
-                    showAuthMsg("Conta criada com sucesso! Faça login com suas credenciais.", false);
-                }
+                showAuthMsg(`Conta @${data.username} criada! Entrando...`, false);
+                openDashboard(data);
             }
         }
 
-        // Logout
-        async function handleLogout() {
-            await supabase.auth.signOut();
-            currentUser = null;
-            document.getElementById('dashboardContainer').style.display = 'none';
-            document.getElementById('authContainer').style.display = 'flex';
-            document.getElementById('authPassword').value = '';
-            showAuthMsg("Sessão finalizada com sucesso.", false);
+        // Admin criando operador pelo painel
+        async function adminCreateUser() {
+            const username = document.getElementById('adminAddUser').value.trim();
+            const password = document.getElementById('adminAddPass').value;
+            const msgEl = document.getElementById('adminAddMsg');
+
+            if (!username || !password) {
+                msgEl.innerText = "Preencha usuário e senha.";
+                return;
+            }
+
+            msgEl.innerText = "Criando...";
+            const { data, error } = await supabase.rpc('register_account', {
+                p_username: username,
+                p_password: password
+            });
+
+            if (data?.success) {
+                msgEl.innerText = `Operador @${username} criado com sucesso!`;
+                document.getElementById('adminAddUser').value = '';
+                document.getElementById('adminAddPass').value = '';
+                setTimeout(() => msgEl.innerText = '', 4000);
+            } else {
+                msgEl.innerText = data?.error || "Erro ao criar.";
+            }
         }
 
-        // Configurar Dashboard após login
-        async function setupDashboard(user) {
-            currentUser = user;
+        // Abrir Dashboard
+        async function openDashboard(account) {
+            currentAccount = account;
+            localStorage.setItem('jotta_os_account', JSON.stringify(account));
+
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('dashboardContainer').style.display = 'block';
-            document.getElementById('userEmailDisplay').innerText = user.email;
+            document.getElementById('userNameDisplay').innerText = `@${account.username}`;
+
+            // Distinção visual de Administrador Único
+            const roleBadge = document.getElementById('userRoleBadge');
+            const adminSec = document.getElementById('adminSection');
+
+            if (account.role === 'admin' || account.is_admin) {
+                roleBadge.className = 'admin-badge';
+                roleBadge.innerText = '👑 ÚNICO ADMIN';
+                adminSec.style.display = 'block';
+            } else {
+                roleBadge.className = 'status-badge';
+                roleBadge.innerText = '👤 OPERADOR';
+                adminSec.style.display = 'none';
+            }
+
             await loadTasksFromDB();
         }
 
-        // Carregar status das tarefas do Supabase
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem('jotta_os_account');
+            currentAccount = null;
+            document.getElementById('dashboardContainer').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('adminPasswordInput').value = '';
+            checkSystemSetup();
+            showAuthMsg("Sessão finalizada com sucesso.", false);
+        }
+
+        // Carregar tarefas salvas no Supabase
         async function loadTasksFromDB() {
-            if (!currentUser) return;
+            if (!currentAccount) return;
             try {
                 const { data, error } = await supabase
                     .from('user_tasks')
                     .select('task_key, completed')
-                    .eq('user_id', currentUser.id);
+                    .eq('account_id', currentAccount.id);
 
                 if (!error && data) {
                     data.forEach(item => {
@@ -336,13 +633,13 @@
                     });
                 }
             } catch (err) {
-                console.error("Erro ao carregar tarefas do Supabase:", err);
+                console.error("Erro ao ler tarefas:", err);
             }
         }
 
-        // Sincronizar tarefa alterada no Supabase
+        // Salvar tarefa alterada no Supabase
         async function syncTaskToDB(taskKey, completed) {
-            if (!currentUser) return;
+            if (!currentAccount) return;
             const statusEl = document.getElementById('saveStatus');
             statusEl.innerText = "Salvando...";
 
@@ -350,31 +647,25 @@
                 const { error } = await supabase
                     .from('user_tasks')
                     .upsert({
-                        user_id: currentUser.id,
+                        account_id: currentAccount.id,
                         task_key: taskKey,
                         completed: completed,
                         updated_at: new Date().toISOString()
-                    }, { onConflict: 'user_id,task_key' });
+                    }, { onConflict: 'account_id,task_key' });
 
                 if (!error) {
-                    statusEl.innerText = "Salvo no DB";
-                    setTimeout(() => { if (statusEl.innerText === "Salvo no DB") statusEl.innerText = ""; }, 2000);
+                    statusEl.innerText = "Sincronizado no DB";
+                    setTimeout(() => { if (statusEl.innerText === "Sincronizado no DB") statusEl.innerText = ""; }, 2000);
                 } else {
                     statusEl.innerText = "Erro ao sincronizar";
                 }
             } catch (err) {
-                statusEl.innerText = "Erro no DB";
+                statusEl.innerText = "Erro DB";
             }
         }
 
-        // Verificar sessão existente na inicialização
-        async function checkCurrentSession() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session && session.user) {
-                setupDashboard(session.user);
-            }
-        }
-        checkCurrentSession();
+        // Iniciar checagem
+        checkSystemSetup();
 
         // Relógio
         setInterval(() => {
